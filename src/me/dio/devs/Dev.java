@@ -1,28 +1,78 @@
 package me.dio.devs;
 
-import me.dio.cursos.Curso;
-import me.dio.mentorias.Mentoria;
+import me.dio.bootcamp.Bootcamp;
+import me.dio.conteudos.Conteudo;
+import me.dio.conteudos.Curso;
+import me.dio.conteudos.Mentoria;
+
+import java.util.LinkedHashSet;
+import java.util.Objects;
+import java.util.Optional;
+import java.util.Set;
 
 public class Dev {
     private String nome;
-    private Mentoria[] mentorias;
-    private Curso[] cursos;
+    private Set<Conteudo> conteudosInscritos = new LinkedHashSet<>();
+    private Set<Conteudo> conteudosConcluidos = new LinkedHashSet<>();
 
-    public boolean inscreverNoBootcamp(){
-        return false;
+    public void inscreverBootcamp(Bootcamp bootcamp){
+        this.conteudosInscritos.addAll(bootcamp.getConteudos());
+        bootcamp.getDevsInscritos().add(this);
     }
 
-    public boolean progredir(){
-        return false;
+    public void progredir(){
+        Optional<Conteudo> conteudo = this.conteudosInscritos.stream().findFirst();
+        if (conteudo.isPresent()){
+            this.conteudosConcluidos.add(conteudo.get());
+            this.conteudosInscritos.remove(conteudo.get());
+        } else {
+            System.err.println("Você não está matriculado em nenhum conteúdo.");
+        }
     }
 
-    public int calcularXp(){
+    public int calcularTotalXp(){
+        //this.conteudosConcluidos.stream().mapToInt(conteudo -> conteudo.calcularXp()).sum();
+        this.conteudosConcluidos
+                .stream()
+                .mapToInt(Conteudo::calcularXp)
+                .sum();
         return 0;
     }
 
-    public Curso[] exibirCursos(){
-        return cursos;
+    public String getNome() {
+        return nome;
     }
 
+    public void setNome(String nome) {
+        this.nome = nome;
+    }
 
+    public Set<Conteudo> getConteudosInscritos() {
+        return conteudosInscritos;
+    }
+
+    public void setConteudosInscritos(Set<Conteudo> conteudosInscritos) {
+        this.conteudosInscritos = conteudosInscritos;
+    }
+
+    public Set<Conteudo> getConteudosConcluidos() {
+        return conteudosConcluidos;
+    }
+
+    public void setConteudosConcluidos(Set<Conteudo> conteudosConcluidos) {
+        this.conteudosConcluidos = conteudosConcluidos;
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        Dev dev = (Dev) o;
+        return Objects.equals(nome, dev.nome) && Objects.equals(conteudosInscritos, dev.conteudosInscritos) && Objects.equals(conteudosConcluidos, dev.conteudosConcluidos);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(nome, conteudosInscritos, conteudosConcluidos);
+    }
 }
