@@ -15,6 +15,10 @@ public class Dev {
     private Set<Conteudo> conteudosInscritos = new LinkedHashSet<>();
     private Set<Conteudo> conteudosConcluidos = new LinkedHashSet<>();
 
+    public Dev(String nome) {
+        this.nome = nome;
+    }
+
     public void inscreverBootcamp(Bootcamp bootcamp){
         this.conteudosInscritos.addAll(bootcamp.getConteudos());
         bootcamp.getDevsInscritos().add(this);
@@ -32,11 +36,10 @@ public class Dev {
 
     public int calcularTotalXp(){
         //this.conteudosConcluidos.stream().mapToInt(conteudo -> conteudo.calcularXp()).sum();
-        this.conteudosConcluidos
+        return this.conteudosConcluidos
                 .stream()
                 .mapToInt(Conteudo::calcularXp)
                 .sum();
-        return 0;
     }
 
     public String getNome() {
